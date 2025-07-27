@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ujian Online - Sejarah Kebudayaan Islam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%); }
+        .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Mode Selection Screen -->
+    <div id="modeSelection" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl card-shadow p-8 max-w-md w-full text-center">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">📚 Ujian Online</h1>
+                <h2 class="text-lg font-semibold text-blue-600">Ujian Harian 1</h2>
+                <h3 class="text-md text-gray-600">Sejarah Kebudayaan Islam Kelas V</h3>
+                <p class="text-sm text-gray-500 mt-2">Materi: Khalifah Abu Bakar<br>Sub Materi: Abu Bakar pada Masa Jahiliyah</p>
+            </div>
+            <div class="space-y-4">
+                <button onclick="showTeacherLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                    👨‍🏫 Mode Guru
+                </button>
+                <button onclick="showStudentLogin()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                    👨‍🎓 Mode Siswa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Login -->
+    <div id="teacherLogin" class="hidden min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl card-shadow p-8 max-w-md w-full">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">👨‍🏫 Login Guru</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Password:</label>
+                    <input type="password" id="teacherPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan password">
+                </div>
+                <div id="teacherError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                    ❌ Password Anda salah!
+                </div>
+                <button onclick="teacherLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                    Masuk
+                </button>
+                <button onclick="backToModeSelection()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                    Kembali
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Login -->
+    <div id="studentLogin" class="hidden min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl card-shadow p-8 max-w-md w-full">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">👨‍🎓 Login Siswa</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Nama Lengkap:</label>
+                    <input type="text" id="studentName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Masukkan nama lengkap">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Kelas:</label>
+                    <select id="studentClass" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        <option value="5 Utsmani">5 Utsmani</option>
+                    </select>
+                </div>
+                <button onclick="studentLogin()" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                    Mulai Ujian
+                </button>
+                <button onclick="backToModeSelection()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                    Kembali
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Dashboard -->
+    <div id="teacherDashboard" class="hidden min-h-screen p-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-2xl card-shadow p-6 mb-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800">📊 Dashboard Guru</h2>
+                    <div class="space-x-2">
+                        <button onclick="printResults()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                            🖨️ Cetak Daftar Nilai
+                        </button>
+                        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                            🚪 Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-2xl card-shadow p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">📋 Daftar Nilai Siswa</h3>
+                <div id="studentResults" class="overflow-x-auto">
+                    <p class="text-gray-500 text-center py-8">Belum ada siswa yang menyelesaikan ujian</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Exam -->
+    <div id="studentExam" class="hidden min-h-screen p-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="bg-white rounded-2xl card-shadow p-6 mb-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800" id="studentNameDisplay"></h2>
+                        <p class="text-gray-600" id="studentClassDisplay"></p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-red-600" id="timer">60:00</div>
+                        <p class="text-sm text-gray-600">Waktu Tersisa</p>
+                    </div>
+                    <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-300">
+                        🚪 Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question -->
+            <div class="bg-white rounded-2xl card-shadow p-6 mb-6">
+                <div class="mb-4">
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium" id="questionLevel"></span>
+                    <span class="ml-2 text-gray-600" id="questionNumber"></span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-6" id="questionText"></h3>
+                <div class="space-y-3" id="answerOptions"></div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="bg-white rounded-2xl card-shadow p-6">
+                <div class="flex justify-between items-center">
+                    <div class="text-sm text-gray-600">
+                        Soal <span id="currentQuestion">1</span> dari 25
+                    </div>
+                    <button onclick="finishExam()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition duration-300">
+                        ✅ Selesai Ujian
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Result -->
+    <div id="studentResult" class="hidden min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl card-shadow p-8 max-w-md w-full text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">🎉 Ujian Selesai!</h2>
+            <div class="space-y-4 mb-6">
+                <div class="bg-green-100 p-4 rounded-lg">
+                    <p class="text-green-800 font-semibold">Jawaban Benar: <span id="correctCount">0</span></p>
+                </div>
+                <div class="bg-red-100 p-4 rounded-lg">
+                    <p class="text-red-800 font-semibold">Jawaban Salah: <span id="wrongCount">0</span></p>
+                </div>
+                <div class="bg-blue-100 p-4 rounded-lg">
+                    <p class="text-blue-800 font-bold text-xl">Nilai: <span id="finalScore">0</span></p>
+                </div>
+            </div>
+            <button onclick="logout()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
+                Kembali ke Menu Utama
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="hidden fixed top-4 right-4 z-50 bg-white rounded-lg card-shadow p-4 max-w-sm">
+        <div id="notificationContent"></div>
+    </div>
+
+    <script>
+        // Questions data
+        const questions = [
+            // Level 1 Questions (15 questions)
+            { level: 1, question: "Apa nama asli Abu Bakar sebelum masuk Islam?", options: ["Abdullah bin Abi Quhafah", "Abdul Rahman", "Abdullah bin Umar", "Abdul Aziz"], correct: 0 },
+            { level: 1, question: "Abu Bakar berasal dari suku apa?", options: ["Suku Aus", "Suku Quraisy", "Suku Khazraj", "Suku Tamim"], correct: 1 },
+            { level: 1, question: "Apa profesi Abu Bakar pada masa jahiliyah?", options: ["Peternak", "Pedagang", "Petani", "Prajurit"], correct: 1 },
+            { level: 1, question: "Di mana Abu Bakar tinggal pada masa jahiliyah?", options: ["Madinah", "Makkah", "Thaif", "Yaman"], correct: 1 },
+            { level: 1, question: "Abu Bakar dikenal sebagai orang yang...", options: ["Sombong", "Jujur dan terpercaya", "Pemarah", "Pelit"], correct: 1 },
+            { level: 1, question: "Siapa ayah Abu Bakar?", options: ["Abu Quhafah", "Abu Thalib", "Abu Lahab", "Abu Sufyan"], correct: 0 },
+            { level: 1, question: "Apa julukan Abu Bakar pada masa jahiliyah?", options: ["As-Siddiq", "Al-Amin", "Al-Farooq", "As-Sabur"], correct: 0 },
+            { level: 1, question: "Abu Bakar terkenal karena...", options: ["Kekayaannya", "Kepandaiannya berdagang", "Kebaikan hatinya", "Semua benar"], correct: 3 },
+            { level: 1, question: "Pada masa jahiliyah, Abu Bakar tidak pernah...", options: ["Berdagang", "Menyembah berhala", "Menikah", "Berteman"], correct: 1 },
+            { level: 1, question: "Abu Bakar lahir pada tahun...", options: ["571 M", "573 M", "575 M", "577 M"], correct: 1 },
+            { level: 1, question: "Sifat Abu Bakar yang paling menonjol adalah...", options: ["Pemberani", "Dermawan", "Sabar", "Semua benar"], correct: 3 },
+            { level: 1, question: "Abu Bakar dikenal sebagai orang yang...", options: ["Suka berbohong", "Selalu berkata jujur", "Suka berkelahi", "Tidak peduli"], correct: 1 },
+            { level: 1, question: "Keluarga Abu Bakar termasuk dalam golongan...", options: ["Budak", "Bangsawan Quraisy", "Pedagang biasa", "Petani"], correct: 1 },
+            { level: 1, question: "Abu Bakar memiliki hubungan yang baik dengan...", options: ["Semua orang", "Hanya keluarga", "Hanya teman dekat", "Tidak ada"], correct: 0 },
+            { level: 1, question: "Pada masa jahiliyah, Abu Bakar terkenal karena...", options: ["Kekejaman", "Keadilan dan kebijaksanaan", "Kemiskinan", "Kesombongan"], correct: 1 },
+            
+            // Level 2 Questions (10 questions)
+            { level: 2, question: "Mengapa Abu Bakar tidak pernah menyembah berhala pada masa jahiliyah?", options: ["Karena miskin", "Karena fitrah yang bersih", "Karena takut", "Karena malas"], correct: 1 },
+            { level: 2, question: "Bagaimana cara Abu Bakar membangun kepercayaan dalam berdagang?", options: ["Dengan menipu", "Dengan kejujuran dan amanah", "Dengan kekerasan", "Dengan suap"], correct: 1 },
+            { level: 2, question: "Apa yang membuat Abu Bakar dihormati masyarakat Makkah?", options: ["Kekayaan saja", "Akhlak mulia dan kebijaksanaan", "Kekuatan fisik", "Keturunan"], correct: 1 },
+            { level: 2, question: "Bagaimana Abu Bakar memperlakukan orang miskin pada masa jahiliyah?", options: ["Mengabaikan", "Membantu dengan tulus", "Merendahkan", "Menjauhi"], correct: 1 },
+            { level: 2, question: "Apa yang menunjukkan bahwa Abu Bakar memiliki fitrah yang baik?", options: ["Tidak minum khamar", "Tidak berjudi", "Tidak menyembah berhala", "Semua benar"], correct: 3 },
+            { level: 2, question: "Mengapa Abu Bakar mudah menerima Islam ketika diajak Nabi?", options: ["Karena takut", "Karena hatinya sudah bersih", "Karena dipaksa", "Karena ingin kaya"], correct: 1 },
+            { level: 2, question: "Bagaimana Abu Bakar menyelesaikan konflik pada masa jahiliyah?", options: ["Dengan kekerasan", "Dengan kebijaksanaan dan perdamaian", "Dengan menghindar", "Dengan menyuap"], correct: 1 },
+            { level: 2, question: "Apa yang membedakan Abu Bakar dengan pemuda Quraisy lainnya?", options: ["Lebih kaya", "Akhlak yang mulia", "Lebih tampan", "Lebih kuat"], correct: 1 },
+            { level: 2, question: "Bagaimana Abu Bakar mempersiapkan diri untuk menjadi pemimpin?", options: ["Belajar memimpin dalam perdagangan", "Tidak mempersiapkan", "Hanya mengandalkan keturunan", "Belajar berkelahi"], correct: 0 },
+            { level: 2, question: "Apa hikmah dari kehidupan Abu Bakar pada masa jahiliyah?", options: ["Kekayaan adalah segalanya", "Akhlak mulia membawa berkah", "Keturunan menentukan segalanya", "Kekuatan adalah yang utama"], correct: 1 }
+        ];
+
+        // Application state
+        let currentUser = null;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let timeLeft = 3600; // 60 minutes in seconds
+        let timer = null;
+        let examResults = JSON.parse(localStorage.getItem('examResults')) || [];
+
+        // Show different screens
+        function showTeacherLogin() {
+            document.getElementById('modeSelection').classList.add('hidden');
+            document.getElementById('teacherLogin').classList.remove('hidden');
+        }
+
+        function showStudentLogin() {
+            document.getElementById('modeSelection').classList.add('hidden');
+            document.getElementById('studentLogin').classList.remove('hidden');
+        }
+
+        function backToModeSelection() {
+            document.querySelectorAll('div[id$="Login"], div[id$="Dashboard"], div[id$="Exam"], div[id$="Result"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('modeSelection').classList.remove('hidden');
+            document.getElementById('teacherError').classList.add('hidden');
+            document.getElementById('teacherPassword').value = '';
+            document.getElementById('studentName').value = '';
+        }
+
+        // Teacher login
+        function teacherLogin() {
+            const password = document.getElementById('teacherPassword').value;
+            if (password === '123') {
+                document.getElementById('teacherLogin').classList.add('hidden');
+                document.getElementById('teacherDashboard').classList.remove('hidden');
+                loadTeacherDashboard();
+            } else {
+                document.getElementById('teacherError').classList.remove('hidden');
+            }
+        }
+
+        // Student login
+        function studentLogin() {
+            const name = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value;
+            
+            if (!name) {
+                showNotification('❌ Nama tidak boleh kosong!', 'error');
+                return;
+            }
+
+            currentUser = { name, class: studentClass };
+            document.getElementById('studentLogin').classList.add('hidden');
+            document.getElementById('studentExam').classList.remove('hidden');
+            
+            document.getElementById('studentNameDisplay').textContent = name;
+            document.getElementById('studentClassDisplay').textContent = `Kelas: ${studentClass}`;
+            
+            startExam();
+        }
+
+        // Start exam
+        function startExam() {
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            timeLeft = 3600;
+            startTimer();
+            showQuestion();
+        }
+
+        // Timer functions
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    finishExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Show question
+        function showQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                finishExam();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            document.getElementById('questionLevel').textContent = `Level ${question.level}`;
+            document.getElementById('questionNumber').textContent = `Soal ${currentQuestionIndex + 1}`;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+
+            const optionsContainer = document.getElementById('answerOptions');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left p-4 border border-gray-300 rounded-lg hover:bg-blue-50 transition duration-300';
+                button.innerHTML = `<span class="font-medium">${String.fromCharCode(65 + index)}.</span> ${option}`;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Select answer
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === question.correct;
+            
+            userAnswers.push({
+                questionIndex: currentQuestionIndex,
+                selectedAnswer: selectedIndex,
+                correctAnswer: question.correct,
+                isCorrect: isCorrect,
+                question: question.question,
+                options: question.options,
+                level: question.level
+            });
+
+            if (isCorrect) {
+                showNotification('👍 Yeah, kamu menjawab dengan benar!', 'success');
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    showQuestion();
+                }, 1500);
+            } else {
+                showNotification('💪 Maaf, kamu belum berhasil, belajar lebih giat lagi ya!', 'error');
+                // Lock the question - move to next after showing notification
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    showQuestion();
+                }, 2000);
+            }
+        }
+
+        // Finish exam
+        function finishExam() {
+            clearInterval(timer);
+            
+            const correctAnswers = userAnswers.filter(answer => answer.isCorrect).length;
+            const wrongAnswers = userAnswers.length - correctAnswers;
+            const score = Math.round((correctAnswers / questions.length) * 100);
+
+            // Save result
+            const result = {
+                name: currentUser.name,
+                class: currentUser.class,
+                correctAnswers,
+                wrongAnswers,
+                score,
+                answers: userAnswers,
+                completedAt: new Date().toLocaleString('id-ID')
+            };
+
+            examResults.push(result);
+            localStorage.setItem('examResults', JSON.stringify(examResults));
+
+            // Show result
+            document.getElementById('studentExam').classList.add('hidden');
+            document.getElementById('studentResult').classList.remove('hidden');
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('wrongCount').textContent = wrongAnswers;
+            document.getElementById('finalScore').textContent = score;
+        }
+
+        // Load teacher dashboard
+        function loadTeacherDashboard() {
+            const resultsContainer = document.getElementById('studentResults');
+            
+            if (examResults.length === 0) {
+                resultsContainer.innerHTML = '<p class="text-gray-500 text-center py-8">Belum ada siswa yang menyelesaikan ujian</p>';
+                return;
+            }
+
+            let html = `
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2">No</th>
+                            <th class="border border-gray-300 px-4 py-2">Nama</th>
+                            <th class="border border-gray-300 px-4 py-2">Kelas</th>
+                            <th class="border border-gray-300 px-4 py-2">Benar</th>
+                            <th class="border border-gray-300 px-4 py-2">Salah</th>
+                            <th class="border border-gray-300 px-4 py-2">Nilai</th>
+                            <th class="border border-gray-300 px-4 py-2">Waktu Selesai</th>
+                            <th class="border border-gray-300 px-4 py-2 no-print">Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            examResults.forEach((result, index) => {
+                html += `
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-center">${index + 1}</td>
+                        <td class="border border-gray-300 px-4 py-2">${result.name}</td>
+                        <td class="border border-gray-300 px-4 py-2">${result.class}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">${result.correctAnswers}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">${result.wrongAnswers}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center font-bold">${result.score}</td>
+                        <td class="border border-gray-300 px-4 py-2">${result.completedAt}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center no-print">
+                            <button onclick="showStudentDetail(${index})" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                Detail
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            resultsContainer.innerHTML = html;
+        }
+
+        // Show student detail
+        function showStudentDetail(index) {
+            const result = examResults[index];
+            let detailHtml = `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-xl font-bold">Detail Jawaban - ${result.name}</h3>
+                                <button onclick="closeStudentDetail()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                            </div>
+                            <div class="space-y-4">
+            `;
+
+            result.answers.forEach((answer, i) => {
+                const statusClass = answer.isCorrect ? 'bg-green-100 border-green-300' : 'bg-red-100 border-red-300';
+                const statusIcon = answer.isCorrect ? '✅' : '❌';
+                
+                detailHtml += `
+                    <div class="border ${statusClass} rounded-lg p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">Level ${answer.level}</span>
+                            <span class="font-medium">Soal ${i + 1}</span>
+                            <span class="ml-auto text-lg">${statusIcon}</span>
+                        </div>
+                        <p class="font-medium mb-3">${answer.question}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            ${answer.options.map((option, optIndex) => {
+                                let optionClass = 'p-2 rounded border';
+                                if (optIndex === answer.correctAnswer) {
+                                    optionClass += ' bg-green-200 border-green-400'; // Correct answer
+                                } else if (optIndex === answer.selectedAnswer && !answer.isCorrect) {
+                                    optionClass += ' bg-red-200 border-red-400'; // Wrong selected answer
+                                } else {
+                                    optionClass += ' bg-gray-100 border-gray-300';
+                                }
+                                return `<div class="${optionClass}">${String.fromCharCode(65 + optIndex)}. ${option}</div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            detailHtml += `
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', detailHtml);
+        }
+
+        function closeStudentDetail() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) modal.remove();
+        }
+
+        // Print results
+        function printResults() {
+            window.print();
+        }
+
+        // Logout
+        function logout() {
+            clearInterval(timer);
+            currentUser = null;
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            timeLeft = 3600;
+            
+            document.querySelectorAll('div[id$="Login"], div[id$="Dashboard"], div[id$="Exam"], div[id$="Result"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('modeSelection').classList.remove('hidden');
+            
+            // Clear forms
+            document.getElementById('teacherPassword').value = '';
+            document.getElementById('studentName').value = '';
+            document.getElementById('teacherError').classList.add('hidden');
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            const content = document.getElementById('notificationContent');
+            
+            const bgColor = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700';
+            
+            content.innerHTML = `<div class="border px-4 py-3 rounded ${bgColor}">${message}</div>`;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved results
+            examResults = JSON.parse(localStorage.getItem('examResults')) || [];
+        });
+    </script>
+</body>
+</html>
